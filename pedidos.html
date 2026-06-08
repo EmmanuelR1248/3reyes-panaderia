@@ -6,19 +6,46 @@
     <title>Realizar Pedido - Tres Reyes Panadería</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Ajustes específicos para integrar la cantidad y desglose al formulario nativo */
-        .flex-producto-cantidad {
+        .contenedor-seguro {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .formulario-columna {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+        .formulario-columna input, 
+        .formulario-columna select, 
+        .formulario-columna textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .formulario-columna input:focus, 
+        .formulario-columna select:focus, 
+        .formulario-columna textarea:focus {
+            outline: none;
+            border-color: #d4a373;
+        }
+        .fila-dividida {
             display: flex;
             gap: 15px;
             width: 100%;
         }
-        .flex-producto-cantidad select {
-            flex: 3;
-        }
-        .flex-producto-cantidad input {
-            flex: 1;
-        }
-        .resumen-pago-tarjeta {
+        .select-ancho { flex: 7; }
+        .input-corto { flex: 3; }
+        
+        .resumen-cobro {
             background-color: #fdfbf7;
             border: 2px dashed #d4a373;
             padding: 20px;
@@ -27,21 +54,33 @@
             font-size: 16px;
             color: #333;
             display: none;
-            flex-direction: column;
-            gap: 5px;
         }
-        .resumen-pago-tarjeta strong {
-            color: #d4a373;
-            font-size: 22px;
+        .resumen-cobro strong { color: #d4a373; font-size: 22px; }
+        .btn-pagar {
+            width: 100%;
+            padding: 15px;
+            background-color: #d4a373;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
         }
-        .alert-success-tarjeta {
+        .alerta-exito {
             background-color: #d4edda;
             color: #155724;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
             font-weight: bold;
+            text-align: center;
             display: none;
+        }
+        
+        /* Regla responsiva para celulares */
+        @media (max-width: 500px) {
+            .fila-dividida { flex-direction: column; }
         }
     </style>
 </head>
@@ -59,31 +98,35 @@
         </nav>
     </header>
 
-    <main class="main-content">
-        <div class="pedidos-container">
-            <h2 class="page-title">Realiza tu Pedido</h2>
-            <p class="order-subtitle">Para evitar pedidos falsos, requerimos el pago total o un anticipo del 50% con tarjeta de crédito o débito.</p>
+    <main class="main-content" style="text-align: center;">
+        <div class="contenedor-seguro">
+            <h2 class="page-title" style="margin-bottom: 10px;">Realiza tu Pedido</h2>
+            <p style="color: #666; margin-bottom: 25px;">Para evitar pedidos falsos, requerimos el pago total o un anticipo del 50% con tarjeta de crédito/débito.</p>
             
-            <div id="mensaje-exito" class="alert-success-tarjeta">
-                ¡Pago con tarjeta procesado con éxito! Tu orden ha sido registrada en el sistema.
+            <div id="mensaje-exito" class="alerta-exito">
+                ¡Pago con tarjeta procesado con éxito! Tu orden ha sido registrada.
             </div>
 
-            <form id="form-pedido" class="order-form">
+            <form id="form-pedido" class="formulario-columna">
                 <input type="text" id="nombre" placeholder="Tu Nombre Completo" required>
-                <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número o enlace de Google Maps)" required>
-                <input type="tel" id="referencia" placeholder="Número telefónico de referencia alternativa" required>
+                <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número)" required>
+                <input type="tel" id="referencia" placeholder="Número telefónico de referencia" required>
                 
-                <div class="flex-producto-cantidad">
-                    <select id="producto" required onchange="calcularPrecios()">
-                        <option value="" disabled selected>Selecciona un producto</option>
-                        <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
-                        <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
-                        <option value="150">Surtido Combinado Familiar ($150.00)</option>
-                    </select>
-                    <input type="number" id="cantidad" placeholder="Cant." min="1" value="1" required onchange="calcularPrecios()">
+                <div class="fila-dividida">
+                    <div class="select-ancho">
+                        <select id="producto" required onchange="calcularPrecios()">
+                            <option value="" disabled selected>Selecciona un producto</option>
+                            <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
+                            <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
+                            <option value="150">Surtido Combinado Familiar ($150.00)</option>
+                        </select>
+                    </div>
+                    <div class="input-corto">
+                        <input type="number" id="cantidad" placeholder="Cant." min="1" value="1" required onchange="calcularPrecios()">
+                    </div>
                 </div>
                 
-                <textarea id="detalles" placeholder="Especifica cantidades y detalles (Ej: 10 conchas de vainilla y 5 de chocolate)" rows="4" required></textarea>
+                <textarea id="detalles" placeholder="Especifica detalles (Ej: 10 conchas de vainilla y 5 de chocolate)" rows="4" required></textarea>
                 
                 <select id="modalidad-pago" required onchange="calcularPrecios()">
                     <option value="" disabled selected>Modalidad de Pago (Tarjeta Obligatoria)</option>
@@ -91,13 +134,13 @@
                     <option value="50">Anticipo de Seguridad (50% con Tarjeta / 50% al Recibir)</option>
                 </select>
 
-                <div id="caja-cobro" class="resumen-pago-tarjeta">
-                    <div>Total de la Orden: $<span id="txt-total">0.00</span> MXN</div>
-                    <div id="txt-nota-entrega" style="font-size: 14px; color: #666; font-style: italic;"></div>
-                    <div style="margin-top: 5px;">Monto a cobrar en tarjeta hoy: <strong>$<span id="txt-cargar">0.00</span> MXN</strong></div>
+                <div id="caja-cobro" class="resumen-cobro">
+                    <div style="margin-bottom: 5px;">Total de la Orden: $<span id="txt-total">0.00</span> MXN</div>
+                    <div id="txt-nota-entrega" style="font-size: 14px; color: #666; font-style: italic; margin-bottom: 15px;"></div>
+                    <div>Monto a cobrar en tarjeta hoy:<br><strong>$<span id="txt-cargar">0.00</span> MXN</strong></div>
                 </div>
                 
-                <button type="submit" class="btn" style="background-color: #d4a373; color: white;">Proceder al Pago Seguro</button>
+                <button type="submit" class="btn-pagar">PROCEDER AL PAGO SEGURO</button>
             </form>
         </div>
     </main>
@@ -121,7 +164,7 @@
     </footer>
 
     <script>
-        // Mantener el estado de sesión activo en la navegación
+        // Actualizar barra de navegación si hay sesión iniciada
         let usuarioActivo = sessionStorage.getItem('usuarioActivo');
         if (sessionStorage.getItem('logeado') === 'true') {
             document.getElementById('nav-login').innerText = "Mi Cuenta (" + usuarioActivo + ")";
@@ -145,7 +188,7 @@
                     nota = "Deberás pagar los restantes $" + cargar.toFixed(2) + " MXN en efectivo al recibir tu pan.";
                 }
 
-                document.getElementById('caja-cobro').style.display = "flex";
+                document.getElementById('caja-cobro').style.display = "block";
                 document.getElementById('txt-total').innerText = total.toFixed(2);
                 document.getElementById('txt-cargar').innerText = cargar.toFixed(2);
                 document.getElementById('txt-nota-entrega').innerText = nota;
