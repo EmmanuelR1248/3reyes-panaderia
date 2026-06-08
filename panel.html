@@ -3,150 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - 3Reyes Panadería</title>
+    <title>Panel de Administración - Tres Reyes Panadería</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e0d8d0; }
-        .admin-table th { background-color: #fcfaf8; color: #c68e58; font-weight: bold; }
-        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-pendiente { background-color: #fff3cd; color: #856404; }
-        .status-entregado { background-color: #d4edda; color: #155724; }
-        .btn-small { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 12px; margin-right: 5px; }
-        .btn-entregar { background-color: #28a745; }
-        .btn-eliminar { background-color: #dc3545; }
-        .btn-rol { background-color: #c68e58; }
-        .panel-section { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 40px; overflow-x: auto;}
+        .admin-table th { background-color: #fdfbf7; color: #d4a373; font-weight: bold; }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-verified { background-color: #d1ecf1; color: #0c5460; }
+        .status-delivered { background-color: #d4edda; color: #155724; }
+        .badge-pago { background: #f8f9fa; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+        .action-buttons button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-right: 5px; color: white; font-weight: bold; }
+        .btn-verify { background-color: #17a2b8; }
+        .btn-deliver { background-color: #28a745; }
+        .btn-delete { background-color: #dc3545; }
+        .btn-rol { background-color: #d4a373; padding: 5px 10px; border: none; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;}
+        .seccion-admin { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 30px; }
     </style>
     <script>
-        let rol = sessionStorage.getItem('rol');
-        if(sessionStorage.getItem('logeado') !== 'true' || rol === 'cliente') {
-            window.location.href = 'login.html'; // Evita que clientes entren aquí
+        if(sessionStorage.getItem('logeado') !== 'true' || sessionStorage.getItem('rol') === 'cliente') {
+            window.location.href = 'login.html';
         }
     </script>
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">3Reyes - Panel (<span id="user-role"></span>)</div>
+        <div class="logo" id="titulo-panel">Tres Reyes - Panel</div>
         <nav>
             <ul>
-                <li><a href="index.html">Ir a Tienda</a></li>
+                <li><a href="index.html">Ir a la Tienda</a></li>
+                <li><a href="panel.html" class="active">Pedidos</a></li>
                 <li><a href="#" id="btn-cerrar-sesion" style="color: #dc3545; font-weight: bold;">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="main-content" style="max-width: 1400px;">
-        
-        <h2 class="page-title" style="text-align: left; font-size: 24px;">Pedidos Activos</h2>
-        <div class="panel-section">
+    <main class="main-content">
+        <h2 class="page-title">Pedidos Activos</h2>
+        <div style="overflow-x: auto; max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
             <table class="admin-table">
                 <thead>
                     <tr>
                         <th>Fecha/Hora</th>
                         <th>Cliente</th>
-                        <th>Dirección</th>
+                        <th>Dirección / Google Maps</th>
+                        <th>Contacto Ref.</th>
                         <th>Pedido</th>
-                        <th>Estado</th>
+                        <th>Método de Pago / Validación</th>
+                        <th>Estado actual</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-pedidos"></tbody>
+                <tbody id="tabla-cuerpo">
+                </tbody>
             </table>
         </div>
 
-        <div id="seccion-usuarios" style="display: none;">
-            <h2 class="page-title" style="text-align: left; font-size: 24px;">Gestión de Usuarios</h2>
-            <div class="panel-section">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Rol Actual</th>
-                            <th>Cambiar Rol</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-usuarios"></tbody>
-                </table>
-            </div>
+        <div id="panel-roles" class="seccion-admin" style="display: none; max-width: 1200px; margin: 40px auto 0;">
+            <h3 style="font-size: 22px; color: #333; margin-bottom: 15px;">Gestión de Personal y Roles</h3>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nombre de Usuario</th>
+                        <th>Rol Asignado</th>
+                        <th>Cambiar Rango</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-usuarios">
+                </tbody>
+            </table>
         </div>
     </main>
 
     <script>
-        document.getElementById('user-role').textContent = sessionStorage.getItem('usuarioActivo');
+        let rolUsuario = sessionStorage.getItem('rol');
         
+        if (rolUsuario === 'repartidor') {
+            document.getElementById('titulo-panel').innerText = 'Tres Reyes - Modo Repartidor';
+        }
+
         document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
-            sessionStorage.clear();
+            sessionStorage.removeItem('logeado');
+            sessionStorage.removeItem('rol');
+            sessionStorage.removeItem('usuarioActivo');
             window.location.href = 'index.html';
         });
 
         function cargarPedidos() {
             let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-            let cuerpo = document.getElementById('tabla-pedidos');
+            let cuerpo = document.getElementById('tabla-cuerpo');
             cuerpo.innerHTML = '';
-            let rolActual = sessionStorage.getItem('rol');
-
+            
+            if (pedidos.length === 0) {
+                cuerpo.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#999;">No hay transacciones registradas.</td></tr>';
+                return;
+            }
+            
             pedidos.reverse().forEach(function(pedido) {
                 let tr = document.createElement('tr');
-                let claseEstado = pedido.estado === 'Entregado' ? 'status-entregado' : 'status-pendiente';
+                let claseEstado = '';
+                if(pedido.estado === 'Pendiente') claseEstado = 'status-pending';
+                if(pedido.estado === 'Pago Verificado') claseEstado = 'status-verified';
+                if(pedido.estado === 'Entregado') claseEstado = 'status-delivered';
+
                 let botonesAccion = '';
                 
-                if(pedido.estado !== 'Entregado') {
-                    botonesAccion += `<button class="btn-small btn-entregar" onclick="cambiarEstado(${pedido.id}, 'Entregado')">Marcar Entregado</button>`;
-                }
-                if(rolActual === 'admin') {
-                    botonesAccion += `<button class="btn-small btn-eliminar" onclick="eliminarPedido(${pedido.id})">Eliminar</button>`;
+                if (rolUsuario === 'admin') {
+                    botonesAccion = `
+                        <button class="btn-verify" onclick="cambiarEstado(${pedido.id}, 'Pago Verificado')">Verificar Pago</button>
+                        <button class="btn-deliver" onclick="cambiarEstado(${pedido.id}, 'Entregado')">Entregado</button>
+                        <button class="btn-delete" onclick="eliminarPedido(${pedido.id})">Eliminar</button>
+                    `;
+                } else if (rolUsuario === 'repartidor') {
+                    botonesAccion = `
+                        <button class="btn-deliver" onclick="cambiarEstado(${pedido.id}, 'Entregado')">Marcar Entregado</button>
+                    `;
                 }
 
                 tr.innerHTML = `
                     <td>${pedido.fecha}</td>
                     <td><strong>${pedido.nombre}</strong></td>
                     <td>${pedido.direccion}</td>
-                    <td><strong>${pedido.producto}</strong></td>
+                    <td>${pedido.referencia}</td>
+                    <td><strong>${pedido.producto}</strong><br><small>${pedido.detalles}</small></td>
+                    <td><span class="badge-pago">${pedido.pago}</span></td>
                     <td><span class="status-badge ${claseEstado}">${pedido.estado}</span></td>
-                    <td>${botonesAccion}</td>
+                    <td class="action-buttons">${botonesAccion}</td>
                 `;
                 cuerpo.appendChild(tr);
             });
         }
 
         function cargarUsuarios() {
-            if(sessionStorage.getItem('rol') !== 'admin') return;
-            document.getElementById('seccion-usuarios').style.display = 'block';
-
+            if (rolUsuario !== 'admin') return;
+            document.getElementById('panel-roles').style.display = "block";
+            
             let usuarios = JSON.parse(localStorage.getItem('usuariosDB')) || [];
             let cuerpo = document.getElementById('tabla-usuarios');
             cuerpo.innerHTML = '';
 
             usuarios.forEach(function(u) {
-                if(u.usuario === 'admin') return; // Evitar que el admin se cambie a sí mismo
-                
+                if(u.usuario === 'admin') return; // El administrador principal es fijo
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${u.usuario}</td>
-                    <td><strong>${u.rol.toUpperCase()}</strong></td>
+                    <td><strong>${u.usuario}</strong></td>
+                    <td><span class="badge-pago" style="color: #d4a373;">${u.rol.toUpperCase()}</span></td>
                     <td>
-                        <select id="rol-${u.usuario}" style="padding: 5px;">
+                        <select id="sel-${u.usuario}" style="padding:5px; border-radius:4px; border:1px solid #ccc;">
                             <option value="cliente" ${u.rol==='cliente'?'selected':''}>Cliente</option>
                             <option value="repartidor" ${u.rol==='repartidor'?'selected':''}>Repartidor</option>
                             <option value="admin" ${u.rol==='admin'?'selected':''}>Administrador</option>
                         </select>
-                        <button class="btn-small btn-rol" onclick="cambiarRol('${u.usuario}')">Actualizar Rol</button>
+                        <button class="btn-rol" onclick="modificarRol('${u.usuario}')">Guardar</button>
                     </td>
                 `;
                 cuerpo.appendChild(tr);
             });
         }
 
+        function modificarRol(user) {
+            let nuevoRol = document.getElementById('sel-' + user).value;
+            let usuarios = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+            usuarios = usuarios.map(u => { if(u.usuario === user) u.rol = nuevoRol; return u; });
+            localStorage.setItem('usuariosDB', JSON.stringify(usuarios));
+            alert('El rol de ' + user + ' ha sido cambiado a ' + nuevoRol);
+            cargarUsuarios();
+        }
+
         function cambiarEstado(id, nuevoEstado) {
             let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-            pedidos = pedidos.map(p => { if (p.id === id) p.estado = nuevoEstado; return p; });
+            pedidos = pedidos.map(function(pedido) {
+                if (pedido.id === id) { pedido.estado = nuevoEstado; }
+                return pedido;
+            });
             localStorage.setItem('pedidos', JSON.stringify(pedidos));
             cargarPedidos();
         }
 
         function eliminarPedido(id) {
-            if(confirm('¿Seguro que deseas eliminar este pedido?')) {
+            if(confirm('¿Seguro que deseas eliminar este registro?')) {
                 let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
                 pedidos = pedidos.filter(p => p.id !== id);
                 localStorage.setItem('pedidos', JSON.stringify(pedidos));
@@ -154,19 +190,11 @@
             }
         }
 
-        function cambiarRol(usuario) {
-            let nuevoRol = document.getElementById(`rol-${usuario}`).value;
-            let usuarios = JSON.parse(localStorage.getItem('usuariosDB')) || [];
-            usuarios = usuarios.map(u => { if (u.usuario === usuario) u.rol = nuevoRol; return u; });
-            localStorage.setItem('usuariosDB', JSON.stringify(usuarios));
-            alert('Rol actualizado exitosamente');
-            cargarUsuarios();
-        }
-
         window.onload = function() {
             cargarPedidos();
             cargarUsuarios();
         };
+        setInterval(cargarPedidos, 5000);
     </script>
 </body>
 </html>
