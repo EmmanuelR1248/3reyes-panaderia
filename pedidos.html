@@ -6,19 +6,43 @@
     <title>Realizar Pedido - Tres Reyes Panadería</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .pedidos-wrapper { max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #d4a373; }
-        .resumen-pago { background-color: #fdfbf7; border: 2px dashed #d4a373; padding: 20px; border-radius: 5px; margin-top: 10px; margin-bottom: 20px; text-align: left; font-size: 16px; color: #333; display: none; }
-        .resumen-pago strong { color: #d4a373; font-size: 20px; }
-        .btn-submit { width: 100%; padding: 15px; background-color: #d4a373; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; font-weight: bold; transition: background 0.3s; }
-        .btn-submit:hover { background-color: #bc8a5f; }
-        .row-50 { display: flex; gap: 15px; }
-        .col-70 { flex: 70%; }
-        .col-30 { flex: 30%; }
-        @media (max-width: 500px) { .row-50 { flex-direction: column; } }
+        /* Ajustes específicos para integrar la cantidad y desglose al formulario nativo */
+        .flex-producto-cantidad {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+        .flex-producto-cantidad select {
+            flex: 3;
+        }
+        .flex-producto-cantidad input {
+            flex: 1;
+        }
+        .resumen-pago-tarjeta {
+            background-color: #fdfbf7;
+            border: 2px dashed #d4a373;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 16px;
+            color: #333;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .resumen-pago-tarjeta strong {
+            color: #d4a373;
+            font-size: 22px;
+        }
+        .alert-success-tarjeta {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -35,59 +59,45 @@
         </nav>
     </header>
 
-    <main class="main-content" style="text-align: center;">
-        <h2 class="page-title">Realiza tu Pedido</h2>
-        <p style="color: #666; margin-bottom: 20px;">Requerimos pago total o anticipo del 50% con tarjeta para procesar la orden.</p>
-        
-        <div class="pedidos-wrapper">
-            <div id="mensaje-exito" style="display: none; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
-                ¡Pago con tarjeta procesado con éxito! Pedido registrado.
+    <main class="main-content">
+        <div class="pedidos-container">
+            <h2 class="page-title">Realiza tu Pedido</h2>
+            <p class="order-subtitle">Para evitar pedidos falsos, requerimos el pago total o un anticipo del 50% con tarjeta de crédito o débito.</p>
+            
+            <div id="mensaje-exito" class="alert-success-tarjeta">
+                ¡Pago con tarjeta procesado con éxito! Tu orden ha sido registrada en el sistema.
             </div>
 
-            <form id="form-pedido">
-                <div class="form-group">
-                    <input type="text" id="nombre" placeholder="Tu Nombre Completo" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="direccion" placeholder="Dirección de entrega o enlace de Google Maps" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" id="referencia" placeholder="Número telefónico de contacto" required>
-                </div>
+            <form id="form-pedido" class="order-form">
+                <input type="text" id="nombre" placeholder="Tu Nombre Completo" required>
+                <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número o enlace de Google Maps)" required>
+                <input type="tel" id="referencia" placeholder="Número telefónico de referencia alternativa" required>
                 
-                <div class="row-50">
-                    <div class="form-group col-70">
-                        <select id="producto" required onchange="calcularPrecios()">
-                            <option value="" disabled selected>Selecciona un producto</option>
-                            <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
-                            <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
-                            <option value="150">Surtido Combinado Familiar ($150.00)</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-30">
-                        <input type="number" id="cantidad" placeholder="Cant." min="1" value="1" required onchange="calcularPrecios()">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <textarea id="detalles" placeholder="Especifica detalles adicionales (Ej: 10 conchas de vainilla)" rows="3" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <select id="modalidad-pago" required onchange="calcularPrecios()">
-                        <option value="" disabled selected>Modalidad de Pago (Tarjeta Obligatoria)</option>
-                        <option value="100">Pago Total (100% con Tarjeta)</option>
-                        <option value="50">Anticipo (50% Tarjeta / 50% Contra Entrega)</option>
+                <div class="flex-producto-cantidad">
+                    <select id="producto" required onchange="calcularPrecios()">
+                        <option value="" disabled selected>Selecciona un producto</option>
+                        <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
+                        <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
+                        <option value="150">Surtido Combinado Familiar ($150.00)</option>
                     </select>
-                </div>
-
-                <div id="caja-cobro" class="resumen-pago">
-                    Total de la Orden: $<span id="txt-total">0.00</span> MXN<br>
-                    <span id="txt-nota-entrega" style="font-size: 13px; color: #666;"></span><br>
-                    <span style="display: block; margin-top: 10px;">Cargar a tu tarjeta: <strong>$<span id="txt-cargar">0.00</span> MXN</strong></span>
+                    <input type="number" id="cantidad" placeholder="Cant." min="1" value="1" required onchange="calcularPrecios()">
                 </div>
                 
-                <button type="submit" class="btn-submit">Proceder al Pago Seguro</button>
+                <textarea id="detalles" placeholder="Especifica cantidades y detalles (Ej: 10 conchas de vainilla y 5 de chocolate)" rows="4" required></textarea>
+                
+                <select id="modalidad-pago" required onchange="calcularPrecios()">
+                    <option value="" disabled selected>Modalidad de Pago (Tarjeta Obligatoria)</option>
+                    <option value="100">Pago Total del Pedido (100% con Tarjeta)</option>
+                    <option value="50">Anticipo de Seguridad (50% con Tarjeta / 50% al Recibir)</option>
+                </select>
+
+                <div id="caja-cobro" class="resumen-pago-tarjeta">
+                    <div>Total de la Orden: $<span id="txt-total">0.00</span> MXN</div>
+                    <div id="txt-nota-entrega" style="font-size: 14px; color: #666; font-style: italic;"></div>
+                    <div style="margin-top: 5px;">Monto a cobrar en tarjeta hoy: <strong>$<span id="txt-cargar">0.00</span> MXN</strong></div>
+                </div>
+                
+                <button type="submit" class="btn" style="background-color: #d4a373; color: white;">Proceder al Pago Seguro</button>
             </form>
         </div>
     </main>
@@ -97,18 +107,21 @@
             <div class="footer-info">
                 <h4>Visítanos</h4>
                 <p>Irapuato, Gto.</p>
+                <p>Abierto de 7:00 AM a 9:00 PM</p>
             </div>
             <div class="footer-info">
                 <h4>Contacto</h4>
                 <p>Tel: (462) 123-4567</p>
+                <p>hola@tresreyespanaderia.com</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Tres Reyes Panadería.</p>
+            <p>&copy; 2026 Tres Reyes Panadería. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script>
+        // Mantener el estado de sesión activo en la navegación
         let usuarioActivo = sessionStorage.getItem('usuarioActivo');
         if (sessionStorage.getItem('logeado') === 'true') {
             document.getElementById('nav-login').innerText = "Mi Cuenta (" + usuarioActivo + ")";
@@ -118,16 +131,21 @@
         }
 
         function calcularPrecios() {
-            let precio = parseFloat(document.getElementById('producto').value);
-            let cant = parseInt(document.getElementById('cantidad').value) || 1;
-            let mod = document.getElementById('modalidad-pago').value;
+            let precioUnidad = parseFloat(document.getElementById('producto').value);
+            let cantidad = parseInt(document.getElementById('cantidad').value) || 1;
+            let modalidad = document.getElementById('modalidad-pago').value;
             
-            if (!isNaN(precio) && mod) {
-                let total = precio * cant;
-                let cargar = mod === "50" ? total / 2 : total;
-                let nota = mod === "50" ? `Restan $${cargar.toFixed(2)} MXN a pagar en efectivo.` : "Pagado en su totalidad.";
+            if (!isNaN(precioUnidad) && modalidad) {
+                let total = precioUnidad * cantidad;
+                let cargar = total;
+                let nota = "Liquidado por completo de manera digital.";
 
-                document.getElementById('caja-cobro').style.display = "block";
+                if (modalidad === "50") {
+                    cargar = total / 2;
+                    nota = "Deberás pagar los restantes $" + cargar.toFixed(2) + " MXN en efectivo al recibir tu pan.";
+                }
+
+                document.getElementById('caja-cobro').style.display = "flex";
                 document.getElementById('txt-total').innerText = total.toFixed(2);
                 document.getElementById('txt-cargar').innerText = cargar.toFixed(2);
                 document.getElementById('txt-nota-entrega').innerText = nota;
@@ -136,31 +154,35 @@
 
         document.getElementById('form-pedido').addEventListener('submit', function(e) {
             e.preventDefault();
+            
             let selectProd = document.getElementById('producto');
-            let prodTxt = selectProd.options[selectProd.selectedIndex].text.split(' ($')[0];
-            let cant = document.getElementById('cantidad').value;
-            let modTxt = document.getElementById('modalidad-pago').value === "100" ? "Tarjeta (100%)" : "Tarjeta (50% Anticipo)";
+            let productoTexto = selectProd.options[selectProd.selectedIndex].text.split(' ($')[0];
+            let cantidad = document.getElementById('cantidad').value;
+            let modPago = document.getElementById('modalidad-pago').value === "100" ? "Tarjeta (100% Pagado)" : "Tarjeta (50% Anticipo)";
 
-            let pedido = {
+            let nuevoPedido = {
                 id: Date.now(),
                 fecha: new Date().toLocaleString(),
                 nombre: document.getElementById('nombre').value,
                 direccion: document.getElementById('direccion').value,
                 referencia: document.getElementById('referencia').value,
-                producto: cant + "x " + prodTxt,
+                producto: cantidad + "x " + productoTexto,
                 detalles: document.getElementById('detalles').value,
-                pago: modTxt,
+                pago: modPago,
                 estado: 'Pago Verificado'
             };
             
-            let db = JSON.parse(localStorage.getItem('pedidos')) || [];
-            db.push(pedido);
-            localStorage.setItem('pedidos', JSON.stringify(db));
+            let listaPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+            listaPedidos.push(nuevoPedido);
+            localStorage.setItem('pedidos', JSON.stringify(listaPedidos));
             
             document.getElementById('form-pedido').reset();
             document.getElementById('caja-cobro').style.display = "none";
             document.getElementById('mensaje-exito').style.display = 'block';
-            setTimeout(() => document.getElementById('mensaje-exito').style.display = 'none', 5000);
+            
+            setTimeout(function() {
+                document.getElementById('mensaje-exito').style.display = 'none';
+            }, 5000);
         });
     </script>
 </body>
