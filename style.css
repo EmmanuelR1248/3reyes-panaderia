@@ -214,3 +214,34 @@ footer {
 .footer-info p {
     margin-bottom: 8px;
 }
+/* --- ADAPTACIÓN PARA CELULARES (MÓVIL) --- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px;
+        text-align: center;
+    }
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 15px;
+    }
+    .hero-content h1 {
+        font-size: 32px;
+    }
+    .grid {
+        grid-template-columns: 1fr; /* Una sola columna en celulares */
+    }
+    .main-content {
+        padding: 30px 15px;
+    }
+    .contenedor-seguro {
+        padding: 20px 15px;
+        margin: 20px auto;
+    }
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
