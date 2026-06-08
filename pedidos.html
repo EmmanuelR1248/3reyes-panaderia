@@ -5,84 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Realizar Pedido - Tres Reyes Panadería</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .contenedor-seguro {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .formulario-columna {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
-        .formulario-columna input, 
-        .formulario-columna select, 
-        .formulario-columna textarea {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        .formulario-columna input:focus, 
-        .formulario-columna select:focus, 
-        .formulario-columna textarea:focus {
-            outline: none;
-            border-color: #d4a373;
-        }
-        .fila-dividida {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-        .select-ancho { flex: 7; }
-        .input-corto { flex: 3; }
-        
-        .resumen-cobro {
-            background-color: #fdfbf7;
-            border: 2px dashed #d4a373;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: left;
-            font-size: 16px;
-            color: #333;
-            display: none;
-        }
-        .resumen-cobro strong { color: #d4a373; font-size: 22px; }
-        .btn-pagar {
-            width: 100%;
-            padding: 15px;
-            background-color: #d4a373;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .alerta-exito {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: center;
-            display: none;
-        }
-        
-        /* Regla responsiva para celulares */
-        @media (max-width: 500px) {
-            .fila-dividida { flex-direction: column; }
-        }
-    </style>
 </head>
 <body>
     <header class="navbar">
@@ -98,73 +20,70 @@
         </nav>
     </header>
 
-    <main class="main-content" style="text-align: center;">
-        <div class="contenedor-seguro">
-            <h2 class="page-title" style="margin-bottom: 10px;">Realiza tu Pedido</h2>
-            <p style="color: #666; margin-bottom: 25px;">Para evitar pedidos falsos, requerimos el pago total o un anticipo del 50% con tarjeta de crédito/débito.</p>
+    <main class="main-content" style="text-align: center; background-color: #fdfbf7; padding-top: 40px;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 30px; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left;">
+            <h2 style="font-size: 32px; color: #333; margin-bottom: 10px; text-align: center;">Realiza tu Pedido</h2>
+            <p style="color: #666; margin-bottom: 25px; text-align: center; font-size: 16px;">Requerimos el pago total o anticipo del 50% con tarjeta para evitar pedidos falsos.</p>
             
-            <div id="mensaje-exito" class="alerta-exito">
+            <div id="mensaje-exito" style="display: none; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; text-align: center;">
                 ¡Pago con tarjeta procesado con éxito! Tu orden ha sido registrada.
             </div>
 
-            <form id="form-pedido" class="formulario-columna">
-                <input type="text" id="nombre" placeholder="Tu Nombre Completo" required>
-                <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número)" required>
-                <input type="tel" id="referencia" placeholder="Número telefónico de referencia" required>
+            <form id="form-pedido" style="display: block; width: 100%;">
                 
-                <div class="fila-dividida">
-                    <div class="select-ancho">
-                        <select id="producto" required onchange="calcularPrecios()">
-                            <option value="" disabled selected>Selecciona un producto</option>
-                            <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
-                            <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
-                            <option value="150">Surtido Combinado Familiar ($150.00)</option>
-                        </select>
-                    </div>
-                    <div class="input-corto">
-                        <input type="number" id="cantidad" placeholder="Cant." min="1" value="1" required onchange="calcularPrecios()">
-                    </div>
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <input type="text" id="nombre" placeholder="Tu Nombre Completo" required style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px;">
                 </div>
                 
-                <textarea id="detalles" placeholder="Especifica detalles (Ej: 10 conchas de vainilla y 5 de chocolate)" rows="4" required></textarea>
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número)" required style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px;">
+                </div>
                 
-                <select id="modalidad-pago" required onchange="calcularPrecios()">
-                    <option value="" disabled selected>Modalidad de Pago (Tarjeta Obligatoria)</option>
-                    <option value="100">Pago Total del Pedido (100% con Tarjeta)</option>
-                    <option value="50">Anticipo de Seguridad (50% con Tarjeta / 50% al Recibir)</option>
-                </select>
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <input type="tel" id="referencia" placeholder="Número telefónico de referencia" required style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px;">
+                </div>
+                
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <select id="producto" required onchange="calcularPrecios()" style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; background-color: white;">
+                        <option value="" disabled selected>Selecciona un producto</option>
+                        <option value="5">Bolillo Tradicional / Teleras ($5.00 c/u)</option>
+                        <option value="15">Pan Dulce Variado ($15.00 c/u)</option>
+                        <option value="150">Surtido Combinado Familiar ($150.00)</option>
+                    </select>
+                </div>
 
-                <div id="caja-cobro" class="resumen-cobro">
-                    <div style="margin-bottom: 5px;">Total de la Orden: $<span id="txt-total">0.00</span> MXN</div>
-                    <div id="txt-nota-entrega" style="font-size: 14px; color: #666; font-style: italic; margin-bottom: 15px;"></div>
-                    <div>Monto a cobrar en tarjeta hoy:<br><strong>$<span id="txt-cargar">0.00</span> MXN</strong></div>
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <input type="number" id="cantidad" placeholder="Cantidad de piezas/paquetes" min="1" value="1" required onchange="calcularPrecios()" style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px;">
                 </div>
                 
-                <button type="submit" class="btn-pagar">PROCEDER AL PAGO SEGURO</button>
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <textarea id="detalles" placeholder="Especifica detalles (Ej: 10 conchas de vainilla y 5 de chocolate)" rows="3" required style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="width: 100%; margin-bottom: 15px;">
+                    <select id="modalidad-pago" required onchange="calcularPrecios()" style="width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; background-color: white;">
+                        <option value="" disabled selected>Modalidad de Pago (Tarjeta Obligatoria)</option>
+                        <option value="100">Pago Total del Pedido (100% con Tarjeta)</option>
+                        <option value="50">Anticipo de Seguridad (50% con Tarjeta / 50% al Recibir)</option>
+                    </select>
+                </div>
+
+                <div id="caja-cobro" style="display: none; background-color: #fdfbf7; border: 2px dashed #d4a373; padding: 20px; border-radius: 5px; margin-bottom: 15px;">
+                    <div style="margin-bottom: 5px; font-size: 16px; color:#333;">Total de la Orden: $<span id="txt-total">0.00</span> MXN</div>
+                    <div id="txt-nota-entrega" style="font-size: 14px; color: #666; font-style: italic; margin-bottom: 10px;"></div>
+                    <div style="font-size: 16px; color:#333;">Monto a cobrar en tarjeta hoy:<br><strong style="color: #d4a373; font-size: 24px;">$<span id="txt-cargar">0.00</span> MXN</strong></div>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 15px; background-color: #d4a373; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 10px;">PROCEDER AL PAGO SEGURO</button>
             </form>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-info">
-                <h4>Visítanos</h4>
-                <p>Irapuato, Gto.</p>
-                <p>Abierto de 7:00 AM a 9:00 PM</p>
-            </div>
-            <div class="footer-info">
-                <h4>Contacto</h4>
-                <p>Tel: (462) 123-4567</p>
-                <p>hola@tresreyespanaderia.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Tres Reyes Panadería. Todos los derechos reservados.</p>
-        </div>
+    <footer style="background-color: #2b2b2b; color: #fff; padding: 50px; text-align: center; margin-top: 40px;">
+        <p>&copy; 2026 Tres Reyes Panadería. Todos los derechos reservados.</p>
     </footer>
 
     <script>
-        // Actualizar barra de navegación si hay sesión iniciada
         let usuarioActivo = sessionStorage.getItem('usuarioActivo');
         if (sessionStorage.getItem('logeado') === 'true') {
             document.getElementById('nav-login').innerText = "Mi Cuenta (" + usuarioActivo + ")";
@@ -197,7 +116,6 @@
 
         document.getElementById('form-pedido').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             let selectProd = document.getElementById('producto');
             let productoTexto = selectProd.options[selectProd.selectedIndex].text.split(' ($')[0];
             let cantidad = document.getElementById('cantidad').value;
@@ -222,10 +140,7 @@
             document.getElementById('form-pedido').reset();
             document.getElementById('caja-cobro').style.display = "none";
             document.getElementById('mensaje-exito').style.display = 'block';
-            
-            setTimeout(function() {
-                document.getElementById('mensaje-exito').style.display = 'none';
-            }, 5000);
+            setTimeout(() => { document.getElementById('mensaje-exito').style.display = 'none'; }, 5000);
         });
     </script>
 </body>
