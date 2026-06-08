@@ -40,7 +40,7 @@
                 <form id="form-login" class="login-form">
                     <input type="text" id="log-usu" placeholder="Usuario" required>
                     <input type="password" id="log-pas" placeholder="Contraseña" required>
-                    <button type="submit">Entrar</button>
+                    <button type="submit">ENTRAR</button>
                     <p>¿No tienes cuenta? <span class="toggle-link" onclick="toggleForms()">Crea una aquí</span></p>
                 </form>
             </div>
@@ -54,7 +54,7 @@
                 <form id="form-registro" class="login-form">
                     <input type="text" id="reg-usu" placeholder="Elige un usuario" required>
                     <input type="password" id="reg-pas" placeholder="Crea una contraseña" required>
-                    <button type="submit">Registrarse</button>
+                    <button type="submit">REGISTRARSE</button>
                     <p>¿Ya tienes cuenta? <span class="toggle-link" onclick="toggleForms()">Inicia sesión</span></p>
                 </form>
             </div>
@@ -75,11 +75,11 @@
             }
         }
 
-        // Registrar cliente en localStorage
+        // Registrar cliente
         document.getElementById('form-registro').addEventListener('submit', function(e) {
             e.preventDefault();
             let u = document.getElementById('reg-usu').value.trim();
-            let p = document.getElementById('reg-pas').value;
+            let p = document.getElementById('reg-pas').value.trim();
             let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
             
             if (u.toLowerCase() === 'admin' || u.toLowerCase() === 'repartidor' || db.find(user => user.usuario.toLowerCase() === u.toLowerCase())) {
@@ -94,31 +94,35 @@
             }
         });
 
-        // Iniciar Sesión
+        // Iniciar Sesión (Blindado)
         document.getElementById('form-login').addEventListener('submit', function(e) {
             e.preventDefault();
-            let u = document.getElementById('log-usu').value.trim();
-            let p = document.getElementById('log-pas').value;
             
-            // Regla de validación de seguridad directa para Administración y Reparto (12345)
+            // Usamos .trim() para borrar espacios accidentales y .toLowerCase() para ignorar mayúsculas
+            let u = document.getElementById('log-usu').value.trim().toLowerCase();
+            let p = document.getElementById('log-pas').value.trim();
+            
+            // Regla infalible para Admin
             if (u === 'admin' && p === '12345') {
                 sessionStorage.setItem('logeado', 'true');
                 sessionStorage.setItem('rol', 'admin');
-                sessionStorage.setItem('usuarioActivo', 'admin');
+                sessionStorage.setItem('usuarioActivo', 'Administrador');
                 window.location.href = 'panel.html';
                 return;
             }
+            
+            // Regla infalible para Repartidor
             if (u === 'repartidor' && p === '12345') {
                 sessionStorage.setItem('logeado', 'true');
                 sessionStorage.setItem('rol', 'repartidor');
-                sessionStorage.setItem('usuarioActivo', 'repartidor');
+                sessionStorage.setItem('usuarioActivo', 'Repartidor');
                 window.location.href = 'panel.html';
                 return;
             }
 
-            // Buscar en base de datos de clientes creados
+            // Búsqueda de clientes normales
             let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
-            let encontrado = db.find(user => user.usuario === u && user.password === p);
+            let encontrado = db.find(user => user.usuario.toLowerCase() === u && user.password === p);
 
             if (encontrado) {
                 sessionStorage.setItem('logeado', 'true');
