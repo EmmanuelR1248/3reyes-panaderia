@@ -3,114 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - 3Reyes Panadería</title>
+    <title>Iniciar Sesión - Tres Reyes Panadería</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #fdfbf7; }
+        .login-wrapper { display: flex; justify-content: center; align-items: center; flex: 1; padding: 20px; }
+        .login-container { max-width: 400px; width: 100%; background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
+        .login-container h2 { margin-bottom: 10px; color: #333; }
+        .login-form input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .login-form button { width: 100%; padding: 15px; background-color: #d4a373; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .error-msg, .success-msg { margin-bottom: 15px; display: none; font-size: 14px; font-weight: bold; padding: 10px; border-radius: 5px; }
+        .error-msg { background: #f8d7da; color: #721c24; }
+        .success-msg { background: #d4edda; color: #155724; }
+        .toggle-link { color: #d4a373; cursor: pointer; font-weight: bold; text-decoration: underline; }
+    </style>
 </head>
-<body style="justify-content: center; align-items: center; background-color: #fcfaf8;">
-    <div class="form-container" style="width: 100%; text-align: center;">
-        <div class="logo" style="margin-bottom: 20px;"><a href="index.html" style="text-decoration:none; color:inherit;">3Reyes Panadería</a></div>
-        
-        <div id="seccion-login">
-            <h2 style="font-family: 'Georgia', serif; color: #332a21; margin-bottom: 10px;">Acceso al Sistema</h2>
-            <p style="color: #665b50; margin-bottom: 25px;">Ingresa tus credenciales para continuar</p>
-            
-            <div id="error-msg-login" style="display: none; color: #d32f2f; margin-bottom: 15px; font-weight: bold;">Usuario o contraseña incorrectos</div>
-            
-            <form id="form-login">
-                <div class="form-group">
-                    <input type="text" id="login-usuario" placeholder="Usuario" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="login-password" placeholder="Contraseña" required>
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Entrar</button>
-                <p>¿No tienes cuenta? <a href="#" id="link-crear" style="color: #c68e58; font-weight:bold;">Crea una aquí</a></p>
-            </form>
-        </div>
+<body>
+    <header class="navbar">
+        <div class="logo">Tres Reyes Panadería</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="pedidos.html">Pedidos</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <div id="seccion-registro" style="display: none;">
-            <h2 style="font-family: 'Georgia', serif; color: #332a21; margin-bottom: 10px;">Crear Cuenta</h2>
-            <p style="color: #665b50; margin-bottom: 25px;">Regístrate como cliente para hacer pedidos</p>
+    <div class="login-wrapper">
+        <div class="login-container">
             
-            <div id="exito-msg-registro" style="display: none; color: #2e7d32; margin-bottom: 15px; font-weight: bold;">¡Cuenta creada! Ya puedes iniciar sesión.</div>
-            <div id="error-msg-registro" style="display: none; color: #d32f2f; margin-bottom: 15px; font-weight: bold;">El usuario ya existe.</div>
-            
-            <form id="form-registro">
-                <div class="form-group">
-                    <input type="text" id="reg-usuario" placeholder="Nuevo Usuario" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="reg-password" placeholder="Contraseña" required>
-                </div>
-                <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Registrarse</button>
-                <p>¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #c68e58; font-weight:bold;">Inicia sesión</a></p>
-            </form>
+            <div id="panel-login">
+                <h2>Acceso al Sistema</h2>
+                <p style="color: #666; margin-bottom: 20px;">Ingresa tus credenciales</p>
+                <div id="error-login" class="error-msg">Usuario o contraseña incorrectos</div>
+                
+                <form id="form-login" class="login-form">
+                    <input type="text" id="log-usu" placeholder="Usuario" required>
+                    <input type="password" id="log-pas" placeholder="Contraseña" required>
+                    <button type="submit">Entrar</button>
+                    <p>¿No tienes cuenta? <span class="toggle-link" onclick="toggleForms()">Crea una aquí</span></p>
+                </form>
+            </div>
+
+            <div id="panel-registro" style="display: none;">
+                <h2>Nueva Cuenta</h2>
+                <p style="color: #666; margin-bottom: 20px;">Regístrate como cliente</p>
+                <div id="error-reg" class="error-msg">El usuario ya existe</div>
+                <div id="success-reg" class="success-msg">¡Cuenta creada! Ya puedes iniciar sesión.</div>
+                
+                <form id="form-registro" class="login-form">
+                    <input type="text" id="reg-usu" placeholder="Elige un usuario" required>
+                    <input type="password" id="reg-pas" placeholder="Crea una contraseña" required>
+                    <button type="submit">Registrarse</button>
+                    <p>¿Ya tienes cuenta? <span class="toggle-link" onclick="toggleForms()">Inicia sesión</span></p>
+                </form>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // Inicializar usuarios por defecto si no existen
-        let usuarios = JSON.parse(localStorage.getItem('usuariosDB')) || [];
-        if (usuarios.length === 0) {
-            usuarios.push({ usuario: 'admin', password: '123', rol: 'admin' });
-            localStorage.setItem('usuariosDB', JSON.stringify(usuarios));
+        // Inicializar administrador si la base de datos está vacía
+        let usuariosDB = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+        if (usuariosDB.length === 0) {
+            usuariosDB.push({ usuario: 'admin', password: '12345', rol: 'admin' });
+            localStorage.setItem('usuariosDB', JSON.stringify(usuariosDB));
         }
 
-        // Alternar entre login y registro
-        document.getElementById('link-crear').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('seccion-login').style.display = 'none';
-            document.getElementById('seccion-registro').style.display = 'block';
-        });
+        function toggleForms() {
+            let login = document.getElementById('panel-login');
+            let reg = document.getElementById('panel-registro');
+            if (login.style.display === 'none') {
+                login.style.display = 'block';
+                reg.style.display = 'none';
+            } else {
+                login.style.display = 'none';
+                reg.style.display = 'block';
+            }
+        }
 
-        document.getElementById('link-login').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('seccion-registro').style.display = 'none';
-            document.getElementById('seccion-login').style.display = 'block';
-        });
-
-        // Lógica de Registro
+        // Procesar Registo
         document.getElementById('form-registro').addEventListener('submit', function(e) {
             e.preventDefault();
-            let user = document.getElementById('reg-usuario').value;
-            let pass = document.getElementById('reg-password').value;
+            let u = document.getElementById('reg-usu').value;
+            let p = document.getElementById('reg-pas').value;
             let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
-
-            let existe = db.find(u => u.usuario === user);
-            if(existe) {
-                document.getElementById('error-msg-registro').style.display = 'block';
-                document.getElementById('exito-msg-registro').style.display = 'none';
+            
+            if(db.find(user => user.usuario === u)) {
+                document.getElementById('error-reg').style.display = 'block';
+                document.getElementById('success-reg').style.display = 'none';
             } else {
-                db.push({ usuario: user, password: pass, rol: 'cliente' }); // Por defecto son clientes
+                db.push({ usuario: u, password: p, rol: 'cliente' });
                 localStorage.setItem('usuariosDB', JSON.stringify(db));
-                document.getElementById('error-msg-registro').style.display = 'none';
-                document.getElementById('exito-msg-registro').style.display = 'block';
+                document.getElementById('error-reg').style.display = 'none';
+                document.getElementById('success-reg').style.display = 'block';
                 document.getElementById('form-registro').reset();
             }
         });
 
-        // Lógica de Login
+        // Procesar Login
         document.getElementById('form-login').addEventListener('submit', function(e) {
             e.preventDefault();
-            let user = document.getElementById('login-usuario').value;
-            let pass = document.getElementById('login-password').value;
+            let u = document.getElementById('log-usu').value;
+            let p = document.getElementById('log-pas').value;
             let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
 
-            let usuarioEncontrado = db.find(u => u.usuario === user && u.password === pass);
+            let encontrado = db.find(user => user.usuario === u && user.password === p);
 
-            if(usuarioEncontrado) {
+            if(encontrado) {
                 sessionStorage.setItem('logeado', 'true');
-                sessionStorage.setItem('rol', usuarioEncontrado.rol);
-                sessionStorage.setItem('usuarioActivo', usuarioEncontrado.usuario);
-
-                // Si es admin o repartidor, va al panel. Si es cliente, va al inicio.
-                if(usuarioEncontrado.rol === 'admin' || usuarioEncontrado.rol === 'repartidor') {
+                sessionStorage.setItem('rol', encontrado.rol);
+                sessionStorage.setItem('usuarioActivo', encontrado.usuario);
+                
+                if(encontrado.rol === 'admin' || encontrado.rol === 'repartidor') {
                     window.location.href = 'panel.html';
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'pedidos.html';
                 }
             } else {
-                document.getElementById('error-msg-login').style.display = 'block';
+                document.getElementById('error-login').style.display = 'block';
             }
         });
     </script>
