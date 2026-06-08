@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realizar Pedido - 3Reyes Panadería</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">3Reyes Panadería</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="bolillo.html">Bolillo</a></li>
+                <li><a href="pan-dulce.html">Pan Dulce</a></li>
+                <li><a href="pedidos.html" class="active">Pedidos</a></li>
+                <li><a href="login.html" style="color: #c68e58; font-weight: bold;">Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <h2 class="page-title">Realiza tu Pedido</h2>
+        <div class="form-container">
+            <p style="text-align: center; color: #665b50; margin-bottom: 25px;">Completa los campos para procesar tu orden directamente en nuestro sistema.</p>
+            
+            <div id="mensaje-exito" style="display: none; background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 4px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+                ¡Pedido recibido con éxito! Nuestro equipo lo procesará de inmediato.
+            </div>
+
+            <form id="form-pedido">
+                <div class="form-group">
+                    <input type="text" id="nombre" placeholder="Tu Nombre Completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="direccion" placeholder="Dirección de entrega (Ej. Calle, número)" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="referencia" placeholder="Referencia (Ej. Casa blanca con portón negro)">
+                </div>
+                <div class="form-group">
+                    <select id="producto" required>
+                        <option value="" disabled selected>¿Qué deseas ordenar?</option>
+                        <option value="Bolillos">Bolillos</option>
+                        <option value="Pan Dulce">Pan Dulce</option>
+                        <option value="Mixto">Mixto (Bolillos y Pan Dulce)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="detalles" rows="3" placeholder="Detalles de tu pedido (Ej. 10 bolillos y 5 conchas)"></textarea>
+                </div>
+                <div class="form-group">
+                    <select id="pago" required>
+                        <option value="" disabled selected>Método de Pago</option>
+                        <option value="Efectivo al recibir">Efectivo al recibir</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Confirmar Pedido</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 3Reyes Panadería. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('form-pedido').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let nuevoPedido = {
+                id: Date.now(),
+                fecha: new Date().toLocaleString(),
+                nombre: document.getElementById('nombre').value,
+                direccion: document.getElementById('direccion').value,
+                referencia: document.getElementById('referencia').value,
+                producto: document.getElementById('producto').value,
+                detalles: document.getElementById('detalles').value,
+                pago: document.getElementById('pago').value,
+                estado: 'Pendiente'
+            };
+            
+            let listaPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+            listaPedidos.push(nuevoPedido);
+            localStorage.setItem('pedidos', JSON.stringify(listaPedidos));
+            
+            document.getElementById('form-pedido').reset();
+            document.getElementById('mensaje-exito').style.display = 'block';
+            
+            setTimeout(function() {
+                document.getElementById('mensaje-exito').style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

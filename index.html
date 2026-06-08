@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3Reyes Panadería - Artesanal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">3Reyes Panadería</div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="bolillo.html">Bolillo</a></li>
+                <li><a href="pan-dulce.html">Pan Dulce</a></li>
+                <li><a href="pedidos.html">Pedidos</a></li>
+                <li><a href="login.html" id="link-cuenta" style="color: #c68e58; font-weight: bold;">Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="background-image: linear-gradient(rgba(42, 33, 24, 0.6), rgba(42, 33, 24, 0.6)), url('https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200&auto=format');">
+        <div class="hero-content">
+            <h1>El sabor de la tradición en cada mordida</h1>
+            <p>Pan artesanal horneado diariamente con los mejores ingredientes, cuidando cada detalle para tu mesa.</p>
+            <a href="pedidos.html" class="btn">Hacer un pedido</a>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <h2 class="page-title">Bienvenidos a Nuestra Tradición</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://tahonajardines.com/wp-content/uploads/Diseno-sin-titulo-3.jpg');"></div>
+                <h3>Calidad Artesanal</h3>
+                <p>Cada pieza de pan es elaborada con recetas tradicionales transmitidas por generaciones, cuidando cada detalle del horneado.</p>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://duquesa.com.co/wp-content/uploads/ingredientes-basicos-panaderia.webp');"></div>
+                <h3>Ingredientes Selectos</h3>
+                <p>Utilizamos harinas de primera calidad y materias primas frescas para garantizar una textura y sabor inigualables.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p style="text-align: center;">&copy; 2026 3Reyes Panadería. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        if(sessionStorage.getItem('logeado') === 'true') {
+            document.getElementById('link-cuenta').textContent = "Mi Cuenta (" + sessionStorage.getItem('usuarioActivo') + ")";
+            if(sessionStorage.getItem('rol') !== 'cliente') {
+                document.getElementById('link-cuenta').href = "panel.html";
+            }
+        }
+    </script>
+</body>
+</html>

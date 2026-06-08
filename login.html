@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - 3Reyes Panadería</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="justify-content: center; align-items: center; background-color: #fcfaf8;">
+    <div class="form-container" style="width: 100%; text-align: center;">
+        <div class="logo" style="margin-bottom: 20px;"><a href="index.html" style="text-decoration:none; color:inherit;">3Reyes Panadería</a></div>
+        
+        <div id="seccion-login">
+            <h2 style="font-family: 'Georgia', serif; color: #332a21; margin-bottom: 10px;">Acceso al Sistema</h2>
+            <p style="color: #665b50; margin-bottom: 25px;">Ingresa tus credenciales para continuar</p>
+            
+            <div id="error-msg-login" style="display: none; color: #d32f2f; margin-bottom: 15px; font-weight: bold;">Usuario o contraseña incorrectos</div>
+            
+            <form id="form-login">
+                <div class="form-group">
+                    <input type="text" id="login-usuario" placeholder="Usuario" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Entrar</button>
+                <p>¿No tienes cuenta? <a href="#" id="link-crear" style="color: #c68e58; font-weight:bold;">Crea una aquí</a></p>
+            </form>
+        </div>
+
+        <div id="seccion-registro" style="display: none;">
+            <h2 style="font-family: 'Georgia', serif; color: #332a21; margin-bottom: 10px;">Crear Cuenta</h2>
+            <p style="color: #665b50; margin-bottom: 25px;">Regístrate como cliente para hacer pedidos</p>
+            
+            <div id="exito-msg-registro" style="display: none; color: #2e7d32; margin-bottom: 15px; font-weight: bold;">¡Cuenta creada! Ya puedes iniciar sesión.</div>
+            <div id="error-msg-registro" style="display: none; color: #d32f2f; margin-bottom: 15px; font-weight: bold;">El usuario ya existe.</div>
+            
+            <form id="form-registro">
+                <div class="form-group">
+                    <input type="text" id="reg-usuario" placeholder="Nuevo Usuario" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="reg-password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Registrarse</button>
+                <p>¿Ya tienes cuenta? <a href="#" id="link-login" style="color: #c68e58; font-weight:bold;">Inicia sesión</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar usuarios por defecto si no existen
+        let usuarios = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+        if (usuarios.length === 0) {
+            usuarios.push({ usuario: 'admin', password: '123', rol: 'admin' });
+            localStorage.setItem('usuariosDB', JSON.stringify(usuarios));
+        }
+
+        // Alternar entre login y registro
+        document.getElementById('link-crear').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('seccion-login').style.display = 'none';
+            document.getElementById('seccion-registro').style.display = 'block';
+        });
+
+        document.getElementById('link-login').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('seccion-registro').style.display = 'none';
+            document.getElementById('seccion-login').style.display = 'block';
+        });
+
+        // Lógica de Registro
+        document.getElementById('form-registro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let user = document.getElementById('reg-usuario').value;
+            let pass = document.getElementById('reg-password').value;
+            let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+
+            let existe = db.find(u => u.usuario === user);
+            if(existe) {
+                document.getElementById('error-msg-registro').style.display = 'block';
+                document.getElementById('exito-msg-registro').style.display = 'none';
+            } else {
+                db.push({ usuario: user, password: pass, rol: 'cliente' }); // Por defecto son clientes
+                localStorage.setItem('usuariosDB', JSON.stringify(db));
+                document.getElementById('error-msg-registro').style.display = 'none';
+                document.getElementById('exito-msg-registro').style.display = 'block';
+                document.getElementById('form-registro').reset();
+            }
+        });
+
+        // Lógica de Login
+        document.getElementById('form-login').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let user = document.getElementById('login-usuario').value;
+            let pass = document.getElementById('login-password').value;
+            let db = JSON.parse(localStorage.getItem('usuariosDB')) || [];
+
+            let usuarioEncontrado = db.find(u => u.usuario === user && u.password === pass);
+
+            if(usuarioEncontrado) {
+                sessionStorage.setItem('logeado', 'true');
+                sessionStorage.setItem('rol', usuarioEncontrado.rol);
+                sessionStorage.setItem('usuarioActivo', usuarioEncontrado.usuario);
+
+                // Si es admin o repartidor, va al panel. Si es cliente, va al inicio.
+                if(usuarioEncontrado.rol === 'admin' || usuarioEncontrado.rol === 'repartidor') {
+                    window.location.href = 'panel.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } else {
+                document.getElementById('error-msg-login').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
